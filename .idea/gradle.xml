@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="GradleMigrationSettings" migrationVersion="1" />
+  <component name="GradleSettings">
+    <option name="linkedExternalProjectsSettings">
+      <GradleProjectSettings>
+        <option name="externalProjectPath" value="$PROJECT_DIR$" />
+        <option name="modules">
+          <set>
+            <option value="$PROJECT_DIR$" />
+            <option value="$PROJECT_DIR$/autoconf" />
+            <option value="$PROJECT_DIR$/common" />
+            <option value="$PROJECT_DIR$/configuration" />
+            <option value="$PROJECT_DIR$/configuration/basic" />
+            <option value="$PROJECT_DIR$/configuration/boot3" />
+            <option value="$PROJECT_DIR$/formats" />
+            <option value="$PROJECT_DIR$/formats/json" />
+            <option value="$PROJECT_DIR$/formats/pretty" />
+            <option value="$PROJECT_DIR$/util" />
+            <option value="$PROJECT_DIR$/util/color" />
+            <option value="$PROJECT_DIR$/util/env" />
+          </set>
+        </option>
+      </GradleProjectSettings>
+    </option>
+  </component>
+</project>

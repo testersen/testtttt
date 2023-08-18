@@ -1,0 +1,150 @@
+package no.telenor.autoconf.logback.formats.pretty.old
+
+import ch.qos.logback.classic.spi.ILoggingEvent
+import ch.qos.logback.classic.spi.IThrowableProxy
+import java.time.LocalDateTime
+import java.time.ZoneId
+import java.time.format.DateTimeFormatter
+
+private val styledTopLinePrefix = messagePrefixStyle(TOP_LINE)
+private val styledMiddleLinesPrefix = messagePrefixStyle(MIDDLE_LINES)
+private val styledMiddleLinePrefix = messagePrefixStyle(MIDDLE_LINE)
+private val styledBottomLinePrefix = messagePrefixStyle(BOTTOM_LINE)
+private val styledSingleLine = messagePrefixStyle(SINGLE_LINE)
+private val styledLoggerNameOpener = loggerNameOpenStyle(LOGGER_NAME_OPEN)
+private val styledLoggerNameCloser = loggerNameCloseStyle(LOGGER_NAME_CLOSE)
+private val styledCallerModOpener = callerModOpenStyle(CALLER_MOD_OPEN)
+private val styledCallerModCloser = callerModCloseStyle(CALLER_MOD_CLOSE)
+private val styledCallerModVersionSeparator = callerModuleToVersionSeparatorStyle(CALLER_MOD_VERSION_SEPARATOR)
+private val styledCallerFileOpener = callerFileOpenStyle(CALLER_FILE_OPEN)
+private val styledCallerFileCloser = callerFileCloseStyle(CALLER_FILE_CLOSE)
+private val styledCallerFileLineSeparator = callerFileToLineStyle(CALLER_FILENAME_LINE_SEPARATOR)
+private val styledCallerModPosSeparator = callerPosModStyle(CALLER_POS_MOD_SEPARATOR)
+private val styledMdcSeparator = mdcSeparatorStyle(MDC_KV_SEPARATOR)
+private val styledMdcNullValue = mdcNullValueStyle(MDC_NULL_VALUE)
+
+private val MULTI_LINES = Regex("(\r?\n){2,}")
+
+internal fun formatMessage(message: String) = messageStyle(
+	message.trimIndent().trim().replace(MULTI_LINES, "\r\n\r\n")
+)
+
+internal fun formatLoggerName(name: String) =
+	"$styledLoggerNameOpener${loggerNameTextStyle(name)}$styledLoggerNameCloser"
+
+internal fun formatCallingModuleVersion(caller: StackTraceElement): String {
+	val moduleVersion = caller.moduleVersion ?: return ""
+	return "$styledCallerModVersionSeparator${callerModuleVersionStyle(moduleVersion)}"
+}
+
+internal fun formatCallingModule(caller: StackTraceElement): String {
+	val moduleName = caller.moduleName ?: return ""
+	return "$styledCallerModOpener${callerModuleNameStyle(moduleName)}${formatCallingModuleVersion(caller)}$styledCallerModCloser"
+}
+
+internal fun formatCallingFileLine(caller: StackTraceElement): String {
+	val lineNumber = caller.lineNumber
+	return "$styledCallerFileLineSeparator${callerFileLineStyle(lineNumber.toString())}"
+}
+
+internal fun formatCallingFile(caller: StackTraceElement): String {
+	val filename = caller.fileName ?: return ""
+	return "$styledCallerFileOpener${callerFileNameStyle(filename)}${formatCallingFileLine(caller)}$styledCallerFileCloser"
+}
+
+internal fun formatCaller(caller: StackTraceElement): String {
+	return "${formatCallingModule(caller)}$styledCallerModPosSeparator${formatCallingFile(caller)}".trim()
+}
+
+internal fun formatLogHeader(event: ILoggingEvent) =
+	"${
+		logLevelStyle(
+			event.level.levelInt,
+			event.level.levelStr
+		).padEnd(5)
+	} ${formatLoggerName(event.loggerName)} ${event.callerData.getOrNull(0)?.let { formatCaller(it) } ?: ""}"
+
+internal fun formatMdc(mdc: Map<String, String>) = mdc.map {
+	@Suppress("SENSELESS_COMPARISON")
+	"\n${mdcKeyStyle(it.key)}$styledMdcSeparator${if (it.value == null) styledMdcNullValue else mdcValueStyle(it.value)}"
+}.let { if (it.isEmpty()) "" else it.joinToString("") }
+
+internal fun formatTimestamp(event: ILoggingEvent) =
+	"\n${mdcKeyStyle("@timestamp")}$styledMdcSeparator${
+		mdcValueStyle(
+			LocalDateTime.ofInstant(
+				event.instant,
+				ZoneId.systemDefault()
+			).format(DateTimeFormatter.ISO_LOCAL_DATE_TIME)
+		)
+	}"
+
+internal fun formatThrowable(throwableProxy: IThrowableProxy): String {
+	return ""
+}
+
+internal fun createOutline(
+	str: String,
+	styledSingleLine: String,
+	styledTopLinePrefix: String,
+	styledBottomLinePrefix: String,
+	styledMiddleLinesPrefix: String,
+	styledMiddleLinePrefix: String,
+): String {
+	val lines = str.split("\n")
+	if (lines.size == 1) return "$styledSingleLine ${lines[0]}"
+	return "$styledTopLinePrefix ${lines[0]}${
+		lines.slice(1..<lines.size - 1).joinToString("") {
+			var prefix = styledMiddleLinesPrefix
+			var line = it
+			if (it.startsWith("$MIDDLE_LINE ")) {
+				line = it.substring(MIDDLE_LINE.length + 1, it.length)
+				prefix = styledMiddleLinePrefix
+			}
+			"\n$prefix ${line.ifEmpty { " " }}"
+		}
+	}\n$styledBottomLinePrefix ${lines[lines.size - 1].removePrefix("$MIDDLE_LINE ")}"
+}
+
+@Suppress("DuplicatedCode", "unused")
+internal fun outline(str: String): String {
+	return createOutline(
+		str,
+		styledSingleLine,
+		styledTopLinePrefix,
+		styledBottomLinePrefix,
+		styledMiddleLinesPrefix,
+		styledMiddleLinePrefix
+	)
+}
+
+@Suppress("DuplicatedCode", "unused")
+internal fun coloredOutline(str: String, level: Int): String {
+	val styledSingleLine = logLevelStyle(level, SINGLE_LINE)
+	val styledTopLinePrefix = logLevelStyle(level, TOP_LINE)
+	val styledBottomLinePrefix = logLevelStyle(level, BOTTOM_LINE)
+	val styledMiddleLinesPrefix = logLevelStyle(level, MIDDLE_LINES)
+	val styledMiddleLinePrefix = logLevelStyle(level, MIDDLE_LINE)
+	return createOutline(
+		str,
+		styledSingleLine,
+		styledTopLinePrefix,
+		styledBottomLinePrefix,
+		styledMiddleLinesPrefix,
+		styledMiddleLinePrefix
+	)
+}
+
+internal fun formatLoggingEvent(event: ILoggingEvent): String {
+	val spacey = false
+	val colorOutline = true
+
+	val newLine = if (spacey) "\n\n" else "\n"
+
+	var str = formatLogHeader(event)
+	str += formatTimestamp(event)
+	str += formatMdc(event.mdcPropertyMap)
+	str += if (event.formattedMessage.isEmpty()) "" else "$newLine$MIDDLE_LINE ${formatMessage(event.formattedMessage)}"
+	str += if (event.throwableProxy == null) "" else "$newLine$MIDDLE_LINE ${formatThrowable(event.throwableProxy)}"
+	return "\n" + (if (colorOutline) coloredOutline(str, event.level.levelInt) else outline(str)) + "\n"
+}

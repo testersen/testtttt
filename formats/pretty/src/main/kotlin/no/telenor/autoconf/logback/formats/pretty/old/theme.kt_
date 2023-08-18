@@ -1,0 +1,61 @@
+package no.telenor.autoconf.logback.formats.pretty.old
+
+import ch.qos.logback.classic.Level
+import internal.utils.colors.*
+
+internal const val MDC_KV_SEPARATOR = " = "
+internal const val MDC_NULL_VALUE = "null"
+
+internal const val CALLER_FILENAME_LINE_SEPARATOR = ":"
+internal const val CALLER_POS_MOD_SEPARATOR = " "
+internal const val CALLER_MOD_VERSION_SEPARATOR = "@"
+internal const val ERROR_CLASS_NAME_DOT_SEPARATOR = "."
+
+internal fun messagePrefixStyle(value: String) = brightBlack(value)
+
+@OptIn(ExperimentalUnsignedTypes::class)
+internal val DEFAULT_LEVEL_CODE = code(37U, 37U)
+internal fun logLevelStyle(level: Int, name: String) = bold(
+	runCode(
+		name, when (level) {
+			Level.TRACE_INT -> TRACE_CODE
+			Level.DEBUG_INT -> DEBUG_CODE
+			Level.INFO_INT -> INFO_CODE
+			Level.WARN_INT -> WARN_CODE
+			Level.ERROR_INT -> ERROR_CODE
+			else -> DEFAULT_LEVEL_CODE
+		}
+	)
+)
+
+internal fun loggerNameStyle(value: String) = value
+internal fun loggerNameTextStyle(value: String) = bold(loggerNameStyle(value))
+internal fun loggerNameOpenStyle(value: String) = loggerNameStyle(value)
+internal fun loggerNameCloseStyle(value: String) = loggerNameStyle(value)
+
+internal fun callerModStyle(value: String) = value
+internal fun callerModOpenStyle(value: String) = callerModStyle(value)
+internal fun callerModCloseStyle(value: String) = callerModStyle(value)
+internal fun callerModuleToVersionSeparatorStyle(value: String) = callerModStyle(value)
+internal fun callerModuleNameStyle(value: String) = callerModStyle(value)
+internal fun callerModuleVersionStyle(value: String) = callerModStyle(value)
+
+internal fun callerFileStyle(value: String) = brightBlack(value)
+internal fun callerFileOpenStyle(value: String) = callerFileStyle(value)
+internal fun callerFileCloseStyle(value: String) = callerFileStyle(value)
+internal fun callerFileToLineStyle(value: String) = callerFileStyle(value)
+internal fun callerFileNameStyle(value: String) = bold(callerFileStyle(value))
+internal fun callerFileLineStyle(value: String) = bold(callerFileStyle(value))
+
+internal fun callerPosModStyle(value: String) = value
+
+internal fun messageStyle(value: String) = value
+
+internal val mdcKeyAnsi = rgb24(0xE9U, 0x56U, 0x78U)
+internal val mdcValueAnsi = rgb24(0xFAU, 0xB7U, 0x95U)
+internal val mdcNullValueAnsi = rgb24(0xB8U, 0x77U, 0xDBU)
+internal fun mdcStyle(value: String) = value
+internal fun mdcKeyStyle(value: String) = runCode(value, mdcKeyAnsi)
+internal fun mdcSeparatorStyle(value: String) = mdcStyle(value)
+internal fun mdcValueStyle(value: String) = runCode(value, mdcValueAnsi)
+internal fun mdcNullValueStyle(value: String) = runCode(value, mdcNullValueAnsi)
