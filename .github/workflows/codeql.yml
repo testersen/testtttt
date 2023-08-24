@@ -1,6 +1,6 @@
 name: CodeQL
 on:
-  workflow_call: { }
+  workflow_call:
   schedule:
     - 0 0 * * *
 jobs:
