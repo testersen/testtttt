@@ -1,5 +1,5 @@
 name: Quality Assurance
-on: [ pull_request, workflow_call ]
+on: [pull_request, workflow_call]
 jobs:
   format:
     name: QA IntelliJ Format
@@ -24,7 +24,7 @@ jobs:
           distribution: temurin
           java-version: 17
       - uses: telenornorway/setup-intellij@v0.1.0
-      - uses: telenornorway/action-intellij-inspect@v0.1.15
+      - uses: telenornorway/action-intellij-inspect@v0.1.16
         env:
           GITHUB_ACTOR: ${{ github.actor }}
           GITHUB_TOKEN: ${{ github.token }}
