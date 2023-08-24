@@ -20,7 +20,7 @@ jobs:
     permissions:
       packages: read
     name: Quality Assurance
-    uses: ./quality-assurance.yml
+    uses: /.github/workflows/quality-assurance.yml
   versioning:
     name: Versioning
     runs-on: ubuntu-latest
