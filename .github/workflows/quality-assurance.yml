@@ -1,5 +1,5 @@
 name: Quality Assurance
-on: [pull_request, workflow_call]
+on: [ pull_request, workflow_call ]
 jobs:
   format:
     name: QA IntelliJ Format
