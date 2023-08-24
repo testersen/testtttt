@@ -3,6 +3,9 @@ on: [ push ]
 jobs:
   quality-assurance:
     permissions:
+      actions: read
+      contents: read
+      security-events: write
       packages: read
     name: Quality Assurance
     uses: ./.github/workflows/quality-assurance.yml
