@@ -3,7 +3,7 @@ rootProject.name = "autoconf-logback"
 pluginManagement {
 	plugins {
 		kotlin("jvm") version "1.9.0"
-		id("no.ghpkg") version "0.1.5"
+		id("no.ghpkg") version "0.1.6"
 	}
 }
 

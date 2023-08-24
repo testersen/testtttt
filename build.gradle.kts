@@ -8,7 +8,7 @@ plugins {
 
 allprojects {
 	group = "no.telenor.autoconf.logback"
-	version = System.getProperties().getOrDefault("VERSION", "0.1.0-SNAPSHOT")
+	version = System.getProperties().getOrDefault("VERSION", "UNVERSIONED")
 
 	apply(plugin = "org.jetbrains.kotlin.jvm")
 	apply(plugin = "jacoco")
