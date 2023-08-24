@@ -1,3 +1,4 @@
+// @formatter:off
 rootProject.name = "autoconf-logback"
 
 pluginManagement {
@@ -37,3 +38,4 @@ include(
 	":configuration:basic",
 	":configuration:boot3",
 )
+// @formatter:on
