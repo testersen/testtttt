@@ -3,6 +3,7 @@ rootProject.name = "autoconf-logback"
 pluginManagement {
 	plugins {
 		kotlin("jvm") version "1.9.0"
+		id("no.ghpkg") version "0.1.5"
 	}
 }
 
@@ -21,11 +22,12 @@ dependencyResolutionManagement {
 
 		create("spring") {
 			library("context", "org.springframework:spring-context:6.0.11")
+			library("logging", "org.springframework.boot:spring-boot-starter-logging:3.1.2")
 		}
 	}
 }
 
-arrayOf(
+include(
 	":common",
 	":util:color",
 	":util:env",
@@ -34,4 +36,4 @@ arrayOf(
 	":formats:pretty",
 	":configuration:basic",
 	":configuration:boot3",
-).forEach { include(it) }
+)

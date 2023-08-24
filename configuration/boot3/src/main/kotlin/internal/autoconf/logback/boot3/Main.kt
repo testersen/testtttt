@@ -8,8 +8,19 @@ import org.springframework.context.ConfigurableApplicationContext
 
 @Suppress("unused")
 class SpringbootHijackLogging : ApplicationContextInitializer<ConfigurableApplicationContext> {
+
+	companion object {
+		init {
+			System.setProperty("spring.main.banner-mode", "off")
+			System.setProperty("spring.main.log-startup-info", "off")
+		}
+	}
+
 	override fun initialize(applicationContext: ConfigurableApplicationContext) {
-		applicationContext.environment.systemProperties["spring.main.banner-mode"] = "off"
-		configure(LoggerFactory.getILoggerFactory() as LoggerContext)
+		val context = LoggerFactory.getILoggerFactory() as LoggerContext
+		configure(context)
+		for ((loggerName, level) in defaultLogLevels) {
+			context.getLogger(loggerName).level = level
+		}
 	}
 }

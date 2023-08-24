@@ -1,5 +1,6 @@
 plugins {
-	kotlin("jvm") version "1.9.0"
+	kotlin("jvm")
+	id("no.ghpkg")
 	jacoco
 	`java-library`
 	`maven-publish`
@@ -7,12 +8,13 @@ plugins {
 
 allprojects {
 	group = "no.telenor.autoconf.logback"
-	version = System.getProperties().getOrDefault("VERSION", "UNVERSIONED")
+	version = System.getProperties().getOrDefault("VERSION", "0.1.0-SNAPSHOT")
 
 	apply(plugin = "org.jetbrains.kotlin.jvm")
 	apply(plugin = "jacoco")
 	apply(plugin = "java-library")
 	apply(plugin = "maven-publish")
+	apply(plugin = "no.ghpkg")
 
 	repositories {
 		mavenCentral()
@@ -31,6 +33,9 @@ allprojects {
 	}
 
 	publishing {
+		repositories {
+			github.actions()
+		}
 		publications {
 			register<MavenPublication>("gpr") {
 				from(components["kotlin"])
