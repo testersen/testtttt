@@ -24,7 +24,7 @@ jobs:
           distribution: temurin
           java-version: 17
       - uses: telenornorway/setup-intellij@v0.1.0
-      - uses: telenornorway/action-intellij-inspect@v0.1.16
+      - uses: telenornorway/action-intellij-inspect@v0.1.17
         env:
           GITHUB_ACTOR: ${{ github.actor }}
           GITHUB_TOKEN: ${{ github.token }}

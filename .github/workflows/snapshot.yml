@@ -1,4 +1,4 @@
-name: Release (semver)
+name: Release (snapshot)
 on: [ push ]
 jobs:
   quality-assurance:
