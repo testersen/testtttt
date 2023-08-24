@@ -37,4 +37,4 @@ jobs:
           GITHUB_ACTOR: ${{ github.actor }}
           GITHUB_TOKEN: ${{ github.token }}
   codeql:
-    uses: /.github/workflows/codeql.yml
+    uses: .codeql.yml
